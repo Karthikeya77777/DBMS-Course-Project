@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% block title %}Reports{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Reports</h1><div class="text-muted">Total revenue to date: <b>{{ totals.revenue|money }}</b> from {{ totals.n }} returns</div></div>
+<ul class="nav nav-pills mb-3 flex-wrap gap-1">{% for key, label in report_list %}<li class="nav-item"><a class="nav-link {{ 'active bg-dark' if key==name else 'text-dark bg-white border' }}" href="{{ url_for('reports', report=key) }}">{{ label }}</a></li>{% endfor %}</ul>
+<div class="panel">
+<form class="row g-2 mb-3" method="get"><input type="hidden" name="report" value="{{ name }}">
+  <div class="col-md-3"><label class="form-label">From</label><input class="form-control" type="date" name="from" value="{{ dfrom }}"></div>
+  <div class="col-md-3"><label class="form-label">To</label><input class="form-control" type="date" name="to" value="{{ dto }}"></div>
+  {% if name=='customer_history' %}<div class="col-md-3"><label class="form-label">Customer</label><select class="form-select" name="customer_id"><option value="">All customers</option>{% for c in customers_list %}<option value="{{ c.customer_id }}" {{ 'selected' if customer_id|string==c.customer_id|string }}>{{ c.full_name }}</option>{% endfor %}</select></div>{% endif %}
+  <div class="col-md-3 d-flex align-items-end gap-2"><button class="btn btn-dark">Apply</button><a class="btn btn-outline-secondary" href="{{ url_for('reports', report=name) }}">Reset</a></div></form>
+<h2>{{ title }} <small class="text-muted fw-normal">({{ rows|length }} row{{ 's' if rows|length!=1 }})</small></h2>
+<div class="table-responsive"><table class="table table-hover"><thead><tr>{% for key, label in cols %}<th>{{ label }}</th>{% endfor %}</tr></thead><tbody>
+{% for row in rows %}<tr>{% for key, label in cols %}{% set val = row[key] %}<td>{% if val is none %}-{% elif key in money_cols %}{{ val|money }}{% elif val.__class__.__name__ in ('datetime',) %}{{ val|dt }}{% elif val.__class__.__name__ == 'date' %}{{ val|d }}{% elif key.endswith('status') %}<span class="badge badge-status s-{{ val }}">{{ val }}</span>{% else %}{{ val }}{% endif %}</td>{% endfor %}</tr>
+{% else %}<tr><td colspan="{{ cols|length }}" class="empty">No data for this report and date range.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

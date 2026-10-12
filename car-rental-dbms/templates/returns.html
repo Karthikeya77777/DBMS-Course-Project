@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block title %}Return history{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Return history</h1><a class="btn btn-amber" href="{{ url_for('return_new') }}"><i class="bi bi-arrow-return-left"></i> Process return</a></div>
+<div class="panel">
+<form class="row g-2 mb-3" method="get"><div class="col-md-4"><input class="form-control" name="q" value="{{ q }}" placeholder="Customer, registration or model"></div>
+<div class="col-md-2"><input class="form-control" type="date" name="from" value="{{ dfrom }}"></div><div class="col-md-2"><input class="form-control" type="date" name="to" value="{{ dto }}"></div>
+<div class="col-md-4 d-flex gap-2"><button class="btn btn-dark">Filter</button><a class="btn btn-outline-secondary" href="{{ url_for('returns') }}">Clear</a></div></form>
+<div class="table-responsive"><table class="table table-hover"><thead><tr><th>Rental</th><th>Customer</th><th>Vehicle</th><th>Returned</th><th>Condition</th><th>Late fee</th><th>Final amount</th><th></th></tr></thead><tbody>
+{% for r in rows %}<tr><td>#{{ r.rental_id }}</td><td>{{ r.full_name }}</td><td>{{ r.brand }} {{ r.model }}<br><small class="text-muted">{{ r.registration_number }}</small></td><td>{{ r.actual_return_datetime|dt }}</td><td><span class="badge badge-status s-{{ r.return_condition }}">{{ r.return_condition }}</span></td><td>{{ r.late_fee|money }}</td><td><b>{{ r.final_amount|money }}</b></td><td class="text-end"><a class="btn btn-sm btn-outline-dark" href="{{ url_for('invoice', rental_id=r.rental_id) }}"><i class="bi bi-receipt"></i> Invoice</a></td></tr>
+{% else %}<tr><td colspan="8" class="empty">No completed returns match your filters.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

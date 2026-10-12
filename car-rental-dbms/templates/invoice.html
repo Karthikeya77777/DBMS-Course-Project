@@ -1,0 +1,17 @@
+{% extends "base.html" %}{% block title %}Invoice #{{ r.rental_id }}{% endblock %}
+{% block content %}
+<div class="page-head no-print"><h1>Invoice for rental #{{ r.rental_id }}</h1><div class="d-flex gap-2"><button class="btn btn-outline-dark" onclick="window.print()"><i class="bi bi-printer"></i> Print</button><a class="btn btn-amber" href="{{ url_for('returns') }}">Return history</a></div></div>
+<div class="panel" style="max-width:820px">
+<div class="d-flex justify-content-between mb-3"><div><h2 class="mb-0">DriveDesk Car Rentals</h2><small class="text-muted">Return invoice</small></div><div class="text-end"><b>Invoice #{{ r.rental_id }}</b><br><small>Reservation #{{ r.reservation_id }}</small></div></div>
+<div class="row kv"><div class="col-6"><dt>Customer</dt><dd>{{ r.full_name }}<br>{{ r.phone }}<br>Licence {{ r.driving_license_number }}</dd></div>
+<div class="col-6"><dt>Vehicle</dt><dd>{{ r.brand }} {{ r.model }}<br>{{ r.registration_number }}<br>{{ r.daily_rent|money }} per day</dd></div>
+<div class="col-6"><dt>Picked up</dt><dd>{{ r.actual_pickup_datetime|dt }} - {{ r.pickup_odometer }} km - {{ r.pickup_condition }}</dd></div>
+<div class="col-6"><dt>Returned (expected {{ r.expected_return_date|d }})</dt><dd>{{ r.actual_return_datetime|dt }} - {{ r.return_odometer }} km - {{ r.return_condition }}</dd></div>
+<div class="col-6"><dt>Distance driven</dt><dd>{{ distance }} km</dd></div></div>
+<table class="bill w-100">
+<tr><td>Rental charge ({{ days }} day{{ 's' if days!=1 }} x {{ r.daily_rent|money }})</td><td class="text-end">{{ r.rental_charge|money }}</td></tr>
+<tr><td>Late fee</td><td class="text-end">{{ r.late_fee|money }}</td></tr>
+<tr><td>Fuel charge</td><td class="text-end">{{ r.fuel_charge|money }}</td></tr><tr><td>Damage charge</td><td class="text-end">{{ r.damage_charge|money }}</td></tr><tr><td>Other charge</td><td class="text-end">{{ r.other_charge|money }}</td></tr>
+<tr class="total"><td>Final amount</td><td class="text-end">{{ r.final_amount|money }}</td></tr></table>
+</div>
+{% endblock %}

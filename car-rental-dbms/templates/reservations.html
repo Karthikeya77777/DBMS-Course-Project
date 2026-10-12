@@ -1,0 +1,19 @@
+{% extends "base.html" %}{% block title %}Reservations{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Reservations</h1><a class="btn btn-amber" href="{{ url_for('reservation_new') }}"><i class="bi bi-plus-lg"></i> New reservation</a></div>
+<div class="panel">
+<form class="row g-2 mb-3" method="get">
+  <div class="col-md-3"><input class="form-control" name="q" value="{{ q }}" placeholder="Customer name or phone"></div>
+  <div class="col-md-3"><input class="form-control" name="vehicle" value="{{ vq }}" placeholder="Vehicle reg., brand or model"></div>
+  <div class="col-md-2"><select class="form-select" name="status"><option value="">All status</option>{% for t in RES_STATUSES %}<option {{ 'selected' if t==status }}>{{ t }}</option>{% endfor %}</select></div>
+  <div class="col-md-2"><input class="form-control" type="date" name="from" value="{{ dfrom }}" title="From date"></div>
+  <div class="col-md-2"><input class="form-control" type="date" name="to" value="{{ dto }}" title="To date"></div>
+  <div class="col-12 d-flex gap-2"><button class="btn btn-dark">Filter</button><a class="btn btn-outline-secondary" href="{{ url_for('reservations') }}">Clear</a></div>
+</form>
+<div class="table-responsive"><table class="table table-hover"><thead><tr><th>#</th><th>Customer</th><th>Vehicle</th><th>Booked</th><th>Start</th><th>Expected return</th><th>Estimate</th><th>Status</th><th></th></tr></thead><tbody>
+{% for r in reservations %}<tr><td><a href="{{ url_for('reservation_detail', reservation_id=r.reservation_id) }}">#{{ r.reservation_id }}</a></td><td>{{ r.full_name }}</td><td>{{ r.brand }} {{ r.model }}<br><small class="text-muted">{{ r.registration_number }}</small></td><td>{{ r.booking_date|d }}</td><td>{{ r.start_date|d }}</td><td>{{ r.expected_return_date|d }}</td><td>{{ r.total_estimated_cost|money }}</td><td><span class="badge badge-status s-{{ r.reservation_status }}">{{ r.reservation_status }}</span></td>
+<td class="text-nowrap text-end"><a class="btn btn-sm btn-outline-secondary" href="{{ url_for('reservation_detail', reservation_id=r.reservation_id) }}"><i class="bi bi-eye"></i></a>
+{% if r.reservation_status=='Confirmed' %}<a class="btn btn-sm btn-outline-primary" href="{{ url_for('reservation_edit', reservation_id=r.reservation_id) }}"><i class="bi bi-pencil"></i></a>
+<form class="d-inline" method="post" action="{{ url_for('reservation_cancel', reservation_id=r.reservation_id) }}" data-confirm="Cancel this reservation? The record stays in history.">{{ csrf_field() }}<button class="btn btn-sm btn-outline-danger" title="Cancel"><i class="bi bi-x-circle"></i></button></form>{% endif %}</td></tr>
+{% else %}<tr><td colspan="9" class="empty">No reservations match your filters.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

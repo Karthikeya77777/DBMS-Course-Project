@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block title %}Active rentals{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Active rentals</h1><a class="btn btn-amber" href="{{ url_for('rental_start') }}"><i class="bi bi-box-arrow-right"></i> Start rental</a></div>
+<div class="panel"><div class="table-responsive"><table class="table table-hover"><thead><tr><th>Rental</th><th>Customer</th><th>Vehicle</th><th>Picked up</th><th>Pickup km</th><th>Condition</th><th>Expected return</th><th></th></tr></thead><tbody>
+{% for r in rentals %}<tr><td>#{{ r.rental_id }}<br><small><a href="{{ url_for('reservation_detail', reservation_id=r.reservation_id) }}">Res #{{ r.reservation_id }}</a></small></td><td>{{ r.full_name }}<br><small class="text-muted">{{ r.phone }}</small></td><td>{{ r.brand }} {{ r.model }}<br><small class="text-muted">{{ r.registration_number }}</small></td><td>{{ r.actual_pickup_datetime|dt }}</td><td>{{ r.pickup_odometer }}</td><td><span class="badge badge-status s-{{ r.pickup_condition }}">{{ r.pickup_condition }}</span></td>
+<td>{{ r.expected_return_date|d }} {% if r.is_overdue %}<span class="badge badge-status s-Overdue">{{ r.days_overdue }} day{{ 's' if r.days_overdue!=1 }} overdue</span>{% endif %}</td>
+<td class="text-end"><a class="btn btn-sm btn-amber" href="{{ url_for('return_new', rental_id=r.rental_id) }}">Process return</a></td></tr>
+{% else %}<tr><td colspan="8" class="empty">No vehicles are currently out on rental.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

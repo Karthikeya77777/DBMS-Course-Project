@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% block title %}Reservation #{{ r.reservation_id }}{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Reservation #{{ r.reservation_id }} <span class="badge badge-status s-{{ r.reservation_status }} fs-6">{{ r.reservation_status }}</span></h1>
+<div class="d-flex gap-2">
+{% if r.reservation_status=='Confirmed' %}<a class="btn btn-amber" href="{{ url_for('rental_start', reservation_id=r.reservation_id) }}">Start rental</a><a class="btn btn-outline-primary" href="{{ url_for('reservation_edit', reservation_id=r.reservation_id) }}">Edit</a>
+<form method="post" action="{{ url_for('reservation_cancel', reservation_id=r.reservation_id) }}" data-confirm="Cancel this reservation? The record stays in history.">{{ csrf_field() }}<button class="btn btn-outline-danger">Cancel reservation</button></form>{% endif %}
+{% if r.rental_status=='Active' %}<a class="btn btn-amber" href="{{ url_for('return_new', rental_id=r.rental_id) }}">Process return</a>{% endif %}
+{% if r.rental_status=='Returned' %}<a class="btn btn-outline-dark" href="{{ url_for('invoice', rental_id=r.rental_id) }}">View invoice</a>{% endif %}</div></div>
+<div class="panel"><dl class="kv row">
+<div class="col-md-4"><dt>Customer</dt><dd><a href="{{ url_for('customer_detail', customer_id=r.customer_id) }}">{{ r.full_name }}</a> ({{ r.phone }})</dd></div>
+<div class="col-md-4"><dt>Vehicle</dt><dd><a href="{{ url_for('vehicle_detail', vehicle_id=r.vehicle_id) }}">{{ r.brand }} {{ r.model }}</a> - {{ r.registration_number }}</dd></div>
+<div class="col-md-4"><dt>Booked on</dt><dd>{{ r.booking_date|d }}</dd></div>
+<div class="col-md-4"><dt>Start date</dt><dd>{{ r.start_date|d }}</dd></div><div class="col-md-4"><dt>Expected return</dt><dd>{{ r.expected_return_date|d }} ({{ days }} day{{ 's' if days!=1 }})</dd></div>
+<div class="col-md-4"><dt>Estimated cost</dt><dd>{{ r.total_estimated_cost|money }} <small class="text-muted">at {{ r.daily_rent|money }}/day today</small></dd></div></dl></div>
+{% endblock %}

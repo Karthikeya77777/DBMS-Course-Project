@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}Dashboard{% endblock %} | DriveDesk Car Rentals</title>
+<link href="{{ url_for('static', filename='vendor/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='vendor/bootstrap-icons.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet"></head>
+<body>
+{% set ep = request.endpoint or '' %}
+<aside class="sidebar">
+  <a class="brand" href="{{ url_for('dashboard') }}"><i class="bi bi-car-front-fill"></i><span><b>DriveDesk</b><small>Car Rental DBMS</small></span></a>
+  <nav class="nav flex-column">
+    <a class="nav-link {{ 'active' if ep=='dashboard' }}" href="{{ url_for('dashboard') }}"><i class="bi bi-speedometer2"></i>Dashboard</a>
+    <div class="nav-group">Fleet and people</div>
+    <a class="nav-link {{ 'active' if ep.startswith('vehicle') }}" href="{{ url_for('vehicles') }}"><i class="bi bi-car-front"></i>Vehicles</a>
+    <a class="nav-link {{ 'active' if ep.startswith('customer') }}" href="{{ url_for('customers') }}"><i class="bi bi-people"></i>Customers</a>
+    <div class="nav-group">Operations</div>
+    <a class="nav-link {{ 'active' if ep.startswith('reservation') }}" href="{{ url_for('reservations') }}"><i class="bi bi-calendar-check"></i>Reservations</a>
+    <a class="nav-link {{ 'active' if ep in ('rentals','rental_start') }}" href="{{ url_for('rentals') }}"><i class="bi bi-key"></i>Active rentals</a>
+    <a class="nav-link {{ 'active' if ep=='rental_start' }}" href="{{ url_for('rental_start') }}"><i class="bi bi-box-arrow-right"></i>Start rental</a>
+    <a class="nav-link {{ 'active' if ep=='return_new' }}" href="{{ url_for('return_new') }}"><i class="bi bi-arrow-return-left"></i>Process return</a>
+    <a class="nav-link {{ 'active' if ep in ('returns','invoice') }}" href="{{ url_for('returns') }}"><i class="bi bi-receipt"></i>Return history</a>
+    <div class="nav-group">Insights</div>
+    <a class="nav-link {{ 'active' if ep=='reports' }}" href="{{ url_for('reports') }}"><i class="bi bi-bar-chart-line"></i>Reports</a>
+  </nav>
+</aside>
+<main class="content">
+  <div class="toast-wrap">
+  {% with messages = get_flashed_messages(with_categories=true) %}{% for cat, msg in messages %}
+    <div class="alert alert-{{ cat }} alert-dismissible shadow-sm" role="alert">{{ msg }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+  {% endfor %}{% endwith %}
+  </div>
+  {% block content %}{% endblock %}
+</main>
+<script src="{{ url_for('static', filename='vendor/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body></html>

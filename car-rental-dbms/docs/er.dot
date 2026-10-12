@@ -1,0 +1,17 @@
+digraph ER {
+  rankdir=LR; graph [fontname="Helvetica", pad=0.4, nodesep=0.6, ranksep=1.4, label="ER Diagram - car_rental_db (PK = primary key, FK = foreign key)", labelloc=t, fontsize=18];
+  node [shape=plain, fontname="Helvetica", fontsize=11]; edge [fontname="Helvetica", fontsize=11, color="#0f1b2d"];
+  customers [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4"><TR><TD BGCOLOR="#0f1b2d"><FONT COLOR="white"><B>customers</B></FONT></TD></TR>
+   <TR><TD ALIGN="LEFT" BGCOLOR="#fff1d6"><B>PK</B> customer_id</TD></TR><TR><TD ALIGN="LEFT">full_name</TD></TR><TR><TD ALIGN="LEFT">phone (UNIQUE)</TD></TR><TR><TD ALIGN="LEFT">email (UNIQUE)</TD></TR><TR><TD ALIGN="LEFT">driving_license_number (UNIQUE)</TD></TR><TR><TD ALIGN="LEFT">address</TD></TR></TABLE>>];
+  vehicles [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4"><TR><TD BGCOLOR="#0f1b2d"><FONT COLOR="white"><B>vehicles</B></FONT></TD></TR>
+   <TR><TD ALIGN="LEFT" BGCOLOR="#fff1d6"><B>PK</B> vehicle_id</TD></TR><TR><TD ALIGN="LEFT">registration_number (UNIQUE)</TD></TR><TR><TD ALIGN="LEFT">brand, model</TD></TR><TR><TD ALIGN="LEFT">vehicle_type, fuel_type, transmission_type</TD></TR><TR><TD ALIGN="LEFT">manufacturing_year, seating_capacity</TD></TR><TR><TD ALIGN="LEFT">daily_rent</TD></TR><TR><TD ALIGN="LEFT">availability_status</TD></TR></TABLE>>];
+  reservations [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4"><TR><TD BGCOLOR="#0f1b2d"><FONT COLOR="white"><B>reservations</B></FONT></TD></TR>
+   <TR><TD ALIGN="LEFT" BGCOLOR="#fff1d6"><B>PK</B> reservation_id</TD></TR><TR><TD ALIGN="LEFT" BGCOLOR="#e4edfb"><B>FK</B> customer_id</TD></TR><TR><TD ALIGN="LEFT" BGCOLOR="#e4edfb"><B>FK</B> vehicle_id</TD></TR><TR><TD ALIGN="LEFT">booking_date</TD></TR><TR><TD ALIGN="LEFT">start_date</TD></TR><TR><TD ALIGN="LEFT">expected_return_date</TD></TR><TR><TD ALIGN="LEFT">reservation_status</TD></TR><TR><TD ALIGN="LEFT">total_estimated_cost</TD></TR></TABLE>>];
+  rentals [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4"><TR><TD BGCOLOR="#0f1b2d"><FONT COLOR="white"><B>rentals</B></FONT></TD></TR>
+   <TR><TD ALIGN="LEFT" BGCOLOR="#fff1d6"><B>PK</B> rental_id</TD></TR><TR><TD ALIGN="LEFT" BGCOLOR="#e4edfb"><B>FK</B> reservation_id (UNIQUE)</TD></TR><TR><TD ALIGN="LEFT">actual_pickup_datetime / actual_return_datetime</TD></TR><TR><TD ALIGN="LEFT">pickup_odometer / return_odometer</TD></TR><TR><TD ALIGN="LEFT">pickup_condition / return_condition</TD></TR><TR><TD ALIGN="LEFT">rental_charge, fuel_charge, damage_charge,<BR ALIGN="LEFT"/>other_charge, late_fee, final_amount</TD></TR><TR><TD ALIGN="LEFT">rental_status</TD></TR></TABLE>>];
+  settings [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4"><TR><TD BGCOLOR="#6b778a"><FONT COLOR="white"><B>settings</B></FONT></TD></TR><TR><TD ALIGN="LEFT" BGCOLOR="#fff1d6"><B>PK</B> setting_key</TD></TR><TR><TD ALIGN="LEFT">setting_value</TD></TR><TR><TD ALIGN="LEFT">description</TD></TR></TABLE>>];
+  customers -> reservations [label="  1 : N  makes", arrowhead=crow, arrowtail=tee, dir=both];
+  vehicles -> reservations [label="  1 : N  is booked in", arrowhead=crow, arrowtail=tee, dir=both];
+  reservations -> rentals [label="  1 : 0..1  becomes", arrowhead=teeodot, arrowtail=tee, dir=both];
+  settings -> rentals [style=dashed, label="  policy used\nin billing", arrowhead=none];
+}

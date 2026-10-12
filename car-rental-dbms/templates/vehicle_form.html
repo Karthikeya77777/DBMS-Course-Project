@@ -1,0 +1,19 @@
+{% extends "base.html" %}{% block title %}{{ 'Edit' if editing else 'Add' }} vehicle{% endblock %}
+{% block content %}
+<div class="page-head"><h1>{{ 'Edit vehicle' if editing else 'Add vehicle' }}</h1><a class="btn btn-outline-secondary" href="{{ url_for('vehicles') }}">Back to vehicles</a></div>
+<div class="panel"><form method="post" class="row g-3">{{ csrf_field() }}
+  <div class="col-md-4"><label class="form-label">Registration number</label><input class="form-control" name="registration_number" value="{{ form.registration_number or '' }}" required maxlength="20"></div>
+  <div class="col-md-4"><label class="form-label">Brand</label><input class="form-control" name="brand" value="{{ form.brand or '' }}" required maxlength="50"></div>
+  <div class="col-md-4"><label class="form-label">Model</label><input class="form-control" name="model" value="{{ form.model or '' }}" required maxlength="50"></div>
+  <div class="col-md-3"><label class="form-label">Vehicle type</label><select class="form-select" name="vehicle_type">{% for t in VEHICLE_TYPES %}<option {{ 'selected' if form.vehicle_type==t }}>{{ t }}</option>{% endfor %}</select></div>
+  <div class="col-md-3"><label class="form-label">Fuel type</label><select class="form-select" name="fuel_type">{% for t in FUEL_TYPES %}<option {{ 'selected' if form.fuel_type==t }}>{{ t }}</option>{% endfor %}</select></div>
+  <div class="col-md-3"><label class="form-label">Transmission</label><select class="form-select" name="transmission_type">{% for t in TRANSMISSIONS %}<option {{ 'selected' if form.transmission_type==t }}>{{ t }}</option>{% endfor %}</select></div>
+  <div class="col-md-3"><label class="form-label">Manufacturing year</label><input class="form-control" type="number" name="manufacturing_year" value="{{ form.manufacturing_year or '' }}" min="1990" required></div>
+  <div class="col-md-3"><label class="form-label">Seating capacity</label><input class="form-control" type="number" name="seating_capacity" value="{{ form.seating_capacity or '' }}" min="1" max="20" required></div>
+  <div class="col-md-3"><label class="form-label">Daily rent (₹)</label><input class="form-control" type="number" step="0.01" min="0.01" name="daily_rent" value="{{ form.daily_rent or '' }}" required></div>
+  <div class="col-md-3"><label class="form-label">Availability</label>
+    {% if locked %}<input class="form-control" value="Rented (changes when the vehicle is returned)" disabled>
+    {% else %}<select class="form-select" name="availability_status">{% for t in EDITABLE_STATUSES %}<option {{ 'selected' if form.availability_status==t }}>{{ t }}</option>{% endfor %}</select>{% endif %}</div>
+  <div class="col-12"><button class="btn btn-amber">{{ 'Save changes' if editing else 'Add vehicle' }}</button></div>
+</form></div>
+{% endblock %}

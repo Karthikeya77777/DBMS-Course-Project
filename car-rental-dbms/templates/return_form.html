@@ -1,0 +1,33 @@
+{% extends "base.html" %}{% block title %}Process return{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Process vehicle return</h1><a class="btn btn-outline-secondary" href="{{ url_for('returns') }}">Return history</a></div>
+{% if not active %}<div class="panel empty">There are no active rentals to return.</div>{% else %}
+<div class="row g-3"><div class="col-xl-7"><div class="panel">
+<form method="post" class="row g-3">{{ csrf_field() }}
+  <div class="col-12"><label class="form-label">Active rental</label><select class="form-select" name="rental_id" required onchange="if(this.value){location.href='{{ url_for('return_new') }}?rental_id='+this.value}"><option value="">Choose a rental</option>
+  {% for r in active %}<option value="{{ r.rental_id }}" {{ 'selected' if selected and selected.rental_id==r.rental_id }}>#{{ r.rental_id }} - {{ r.full_name }} - {{ r.brand }} {{ r.model }} ({{ r.registration_number }}){% if r.is_overdue %} - OVERDUE{% endif %}</option>{% endfor %}</select></div>
+  {% if selected %}
+  <div class="col-md-6"><label class="form-label">Actual return date and time</label><input class="form-control" type="datetime-local" name="return_datetime" value="{{ form.return_datetime }}" required></div>
+  <div class="col-md-6"><label class="form-label">Return odometer (km)</label><input class="form-control" type="number" min="{{ selected.pickup_odometer }}" name="return_odometer" value="{{ form.return_odometer or '' }}" required><div class="form-text">Pickup reading: {{ selected.pickup_odometer }} km</div></div>
+  <div class="col-md-6"><label class="form-label">Condition at return</label><select class="form-select" name="return_condition">{% for t in CONDITIONS %}<option {{ 'selected' if form.return_condition==t }}>{{ t }}</option>{% endfor %}</select></div>
+  <div class="col-md-6"></div>
+  <div class="col-md-4"><label class="form-label">Fuel charge (₹)</label><input class="form-control" type="number" step="0.01" min="0" name="fuel_charge" value="{{ form.fuel_charge or '0' }}"></div>
+  <div class="col-md-4"><label class="form-label">Damage charge (₹)</label><input class="form-control" type="number" step="0.01" min="0" name="damage_charge" value="{{ form.damage_charge or '0' }}"></div>
+  <div class="col-md-4"><label class="form-label">Other charge (₹)</label><input class="form-control" type="number" step="0.01" min="0" name="other_charge" value="{{ form.other_charge or '0' }}"></div>
+  <div class="col-12 d-flex gap-2"><button class="btn btn-outline-dark" name="action" value="preview">Preview bill</button>
+  {% if bill %}<button class="btn btn-amber" name="action" value="complete">Complete return</button>{% endif %}</div>
+  {% endif %}
+</form></div></div>
+<div class="col-xl-5">
+{% if selected %}<div class="panel"><h2>Rental #{{ selected.rental_id }}</h2><dl class="kv mb-0">
+<dt>Customer</dt><dd>{{ selected.full_name }}</dd><dt>Vehicle</dt><dd>{{ selected.brand }} {{ selected.model }} - {{ selected.registration_number }} ({{ selected.daily_rent|money }}/day)</dd>
+<dt>Picked up</dt><dd>{{ selected.actual_pickup_datetime|dt }}</dd><dt>Expected return</dt><dd>{{ selected.expected_return_date|d }}{% if selected.is_overdue %} <span class="badge badge-status s-Overdue">overdue</span>{% endif %}</dd></dl></div>{% endif %}
+{% if bill %}<div class="panel"><h2>Itemized bill (preview)</h2>
+<table class="bill w-100">
+<tr><td>Rental: {{ bill.days }} day{{ 's' if bill.days!=1 }} x {{ selected.daily_rent|money }}</td><td class="text-end">{{ bill.rental_charge|money }}</td></tr>
+<tr><td>Late fee: {{ bill.late_days }} late day{{ 's' if bill.late_days!=1 }} x {{ bill.percent }}% of daily rent</td><td class="text-end">{{ bill.late_fee|money }}</td></tr>
+<tr><td>Fuel charge</td><td class="text-end">{{ bill.fuel|money }}</td></tr><tr><td>Damage charge</td><td class="text-end">{{ bill.damage|money }}</td></tr><tr><td>Other charge</td><td class="text-end">{{ bill.other|money }}</td></tr>
+<tr class="total"><td>Final amount</td><td class="text-end">{{ bill.total|money }}</td></tr></table>
+<p class="text-muted small mt-3 mb-0">Policy: late fees start {{ bill.grace|int }} hours after the end of the expected return date.</p></div>{% endif %}
+</div></div>{% endif %}
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="hero">
+  <div><h1>Car Rental Reservation and Vehicle Return Management</h1>
+  <p>Live figures from the car_rental_db MySQL database.</p></div>
+  <svg viewBox="0 0 260 110" fill="none"><path d="M18 78c0-9 4-14 12-16l26-8 24-22c4-4 9-6 15-6h64c7 0 13 3 18 8l22 20 20 4c9 2 15 8 15 18v6c0 4-3 7-7 7h-12a24 24 0 0 0-48 0H100a24 24 0 0 0-48 0H25c-4 0-7-3-7-7z" fill="#f2a516"/><path d="M92 54l16-16c3-3 6-4 10-4h28v20zm62-20h18c4 0 7 1 10 4l14 16h-42z" fill="#0f1b2d" opacity=".75"/><circle cx="76" cy="90" r="17" fill="#0f1b2d" stroke="#c5cfdd" stroke-width="5"/><circle cx="198" cy="90" r="17" fill="#0f1b2d" stroke="#c5cfdd" stroke-width="5"/></svg>
+</div>
+<div class="row g-3 mb-3">
+  <div class="col-6 col-xl-3"><a class="stat" href="{{ url_for('vehicles') }}"><span class="ico"><i class="bi bi-car-front"></i></span><div><div class="num">{{ s.total_vehicles }}</div><div class="lbl">Total vehicles</div></div></a></div>
+  <div class="col-6 col-xl-3"><a class="stat ok" href="{{ url_for('vehicles', status='Available') }}"><span class="ico"><i class="bi bi-check2-circle"></i></span><div><div class="num">{{ s.available_vehicles }}</div><div class="lbl">Available vehicles</div></div></a></div>
+  <div class="col-6 col-xl-3"><a class="stat blue" href="{{ url_for('vehicles', status='Rented') }}"><span class="ico"><i class="bi bi-key"></i></span><div><div class="num">{{ s.rented_vehicles }}</div><div class="lbl">Currently rented</div></div></a></div>
+  <div class="col-6 col-xl-3"><a class="stat danger" href="{{ url_for('reports', report='overdue') }}"><span class="ico"><i class="bi bi-exclamation-triangle"></i></span><div><div class="num">{{ s.overdue_rentals }}</div><div class="lbl">Overdue for return</div></div></a></div>
+  <div class="col-6 col-xl-3"><a class="stat" href="{{ url_for('customers') }}"><span class="ico"><i class="bi bi-people"></i></span><div><div class="num">{{ s.total_customers }}</div><div class="lbl">Customers</div></div></a></div>
+  <div class="col-6 col-xl-3"><a class="stat" href="{{ url_for('reservations') }}"><span class="ico"><i class="bi bi-calendar-check"></i></span><div><div class="num">{{ s.total_reservations }}</div><div class="lbl">Reservations</div></div></a></div>
+  <div class="col-6 col-xl-3"><a class="stat blue" href="{{ url_for('rentals') }}"><span class="ico"><i class="bi bi-speedometer"></i></span><div><div class="num">{{ s.active_rentals }}</div><div class="lbl">Active rentals</div></div></a></div>
+  <div class="col-6 col-xl-3"><a class="stat ok" href="{{ url_for('reports', report='revenue') }}"><span class="ico"><i class="bi bi-currency-rupee"></i></span><div><div class="num">{{ s.revenue|money }}</div><div class="lbl">Revenue from returns</div></div></a></div>
+</div>
+<div class="row g-3">
+  <div class="col-xl-7"><div class="panel h-100"><h2>Recent reservations</h2>
+    <table class="table table-hover"><thead><tr><th>#</th><th>Customer</th><th>Vehicle</th><th>Dates</th><th>Status</th></tr></thead><tbody>
+    {% for r in recent_reservations %}<tr><td><a href="{{ url_for('reservation_detail', reservation_id=r.reservation_id) }}">#{{ r.reservation_id }}</a></td><td>{{ r.full_name }}</td><td>{{ r.brand }} {{ r.model }}</td><td>{{ r.start_date|d }} - {{ r.expected_return_date|d }}</td><td><span class="badge badge-status s-{{ r.reservation_status }}">{{ r.reservation_status }}</span></td></tr>
+    {% else %}<tr><td colspan="5" class="empty">No reservations yet.</td></tr>{% endfor %}</tbody></table></div></div>
+  <div class="col-xl-5"><div class="panel h-100"><h2>Recent returns</h2>
+    <table class="table table-hover"><thead><tr><th>Customer</th><th>Vehicle</th><th>Returned</th><th class="text-end">Bill</th></tr></thead><tbody>
+    {% for r in recent_returns %}<tr><td>{{ r.full_name }}</td><td>{{ r.brand }} {{ r.model }}</td><td>{{ r.actual_return_datetime|dt }}</td><td class="text-end"><a href="{{ url_for('invoice', rental_id=r.rental_id) }}">{{ r.final_amount|money }}</a></td></tr>
+    {% else %}<tr><td colspan="4" class="empty">No returns yet.</td></tr>{% endfor %}</tbody></table></div></div>
+</div>
+{% endblock %}

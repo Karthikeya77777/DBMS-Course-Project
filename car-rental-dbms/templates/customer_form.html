@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block title %}{{ 'Edit' if editing else 'Add' }} customer{% endblock %}
+{% block content %}
+<div class="page-head"><h1>{{ 'Edit customer' if editing else 'Add customer' }}</h1><a class="btn btn-outline-secondary" href="{{ url_for('customers') }}">Back to customers</a></div>
+<div class="panel"><form method="post" class="row g-3">{{ csrf_field() }}
+  <div class="col-md-6"><label class="form-label">Full name</label><input class="form-control" name="full_name" value="{{ form.full_name or '' }}" required maxlength="100"></div>
+  <div class="col-md-6"><label class="form-label">Phone</label><input class="form-control" name="phone" value="{{ form.phone or '' }}" required maxlength="15" placeholder="10-14 digits"></div>
+  <div class="col-md-6"><label class="form-label">Email</label><input class="form-control" type="email" name="email" value="{{ form.email or '' }}" required maxlength="120"></div>
+  <div class="col-md-6"><label class="form-label">Driving licence number</label><input class="form-control" name="driving_license_number" value="{{ form.driving_license_number or '' }}" required maxlength="30"></div>
+  <div class="col-12"><label class="form-label">Address</label><input class="form-control" name="address" value="{{ form.address or '' }}" required maxlength="255"></div>
+  <div class="col-12"><button class="btn btn-amber">{{ 'Save changes' if editing else 'Add customer' }}</button></div>
+</form></div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}{% block title %}Vehicles{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Vehicles</h1><a class="btn btn-amber" href="{{ url_for('vehicle_add') }}"><i class="bi bi-plus-lg"></i> Add vehicle</a></div>
+<div class="panel">
+<form class="row g-2 mb-3" method="get">
+  <div class="col-md-5"><input class="form-control" name="q" value="{{ q }}" placeholder="Search registration, brand or model"></div>
+  <div class="col-md-3"><select class="form-select" name="type"><option value="">All types</option>{% for t in VEHICLE_TYPES %}<option {{ 'selected' if t==vtype }}>{{ t }}</option>{% endfor %}</select></div>
+  <div class="col-md-2"><select class="form-select" name="status"><option value="">All status</option>{% for t in ['Available','Rented','Maintenance'] %}<option {{ 'selected' if t==status }}>{{ t }}</option>{% endfor %}</select></div>
+  <div class="col-md-2 d-flex gap-2"><button class="btn btn-dark flex-fill">Filter</button><a class="btn btn-outline-secondary" href="{{ url_for('vehicles') }}">Clear</a></div>
+</form>
+<div class="table-responsive"><table class="table table-hover"><thead><tr><th>ID</th><th>Registration</th><th>Vehicle</th><th>Type</th><th>Fuel</th><th>Gearbox</th><th>Seats</th><th>Daily rent</th><th>Status</th><th></th></tr></thead><tbody>
+{% for v in vehicles %}<tr><td>{{ v.vehicle_id }}</td><td><a href="{{ url_for('vehicle_detail', vehicle_id=v.vehicle_id) }}">{{ v.registration_number }}</a></td><td>{{ v.brand }} {{ v.model }} <small class="text-muted">({{ v.manufacturing_year }})</small></td><td>{{ v.vehicle_type }}</td><td>{{ v.fuel_type }}</td><td>{{ v.transmission_type }}</td><td>{{ v.seating_capacity }}</td><td>{{ v.daily_rent|money }}</td><td><span class="badge badge-status s-{{ v.availability_status }}">{{ v.availability_status }}</span></td>
+<td class="text-nowrap text-end"><a class="btn btn-sm btn-outline-secondary" href="{{ url_for('vehicle_detail', vehicle_id=v.vehicle_id) }}" title="Details"><i class="bi bi-eye"></i></a> <a class="btn btn-sm btn-outline-primary" href="{{ url_for('vehicle_edit', vehicle_id=v.vehicle_id) }}" title="Edit"><i class="bi bi-pencil"></i></a>
+<form class="d-inline" method="post" action="{{ url_for('vehicle_delete', vehicle_id=v.vehicle_id) }}" data-confirm="Delete this vehicle permanently?">{{ csrf_field() }}<button class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></button></form></td></tr>
+{% else %}<tr><td colspan="10" class="empty">No vehicles match your search.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block title %}{{ 'Edit' if editing else 'New' }} reservation{% endblock %}
+{% block content %}
+<div class="page-head"><h1>{{ 'Edit reservation #%s'|format(reservation_id) if editing else 'New reservation' }}</h1><a class="btn btn-outline-secondary" href="{{ url_for('reservations') }}">Back to reservations</a></div>
+<div class="panel"><form method="post" class="row g-3">{{ csrf_field() }}
+  <div class="col-md-6"><label class="form-label">Customer</label><select class="form-select" name="customer_id" required><option value="">Choose a customer</option>
+    {% for c in customers %}<option value="{{ c.customer_id }}" {{ 'selected' if form.customer_id|string==c.customer_id|string }}>{{ c.full_name }} ({{ c.phone }})</option>{% endfor %}</select></div>
+  <div class="col-md-6"><label class="form-label">Vehicle</label><select class="form-select" name="vehicle_id" id="vehicle_id" required><option value="">Choose a vehicle</option>
+    {% for v in vehicles %}<option value="{{ v.vehicle_id }}" data-rate="{{ v.daily_rent }}" {{ 'selected' if form.vehicle_id|string==v.vehicle_id|string }}>{{ v.brand }} {{ v.model }} - {{ v.registration_number }} ({{ v.daily_rent|money }}/day)</option>{% endfor %}</select></div>
+  <div class="col-md-3"><label class="form-label">Start date</label><input class="form-control" type="date" id="start_date" name="start_date" value="{{ form.start_date or '' }}" {% if not editing %}min="{{ today }}"{% endif %} required></div>
+  <div class="col-md-3"><label class="form-label">Expected return date</label><input class="form-control" type="date" id="expected_return_date" name="expected_return_date" value="{{ form.expected_return_date or '' }}" required></div>
+  <div class="col-md-6"><label class="form-label">Estimated cost</label><div class="form-control bg-light" id="estimate">Pick a vehicle and valid dates to see the estimate.</div></div>
+  <div class="col-12"><p class="text-muted small mb-2">Dates that overlap another active reservation for the same vehicle are rejected. Under-maintenance vehicles are not listed.</p><button class="btn btn-amber">{{ 'Save changes' if editing else 'Create reservation' }}</button></div>
+</form></div>
+{% endblock %}

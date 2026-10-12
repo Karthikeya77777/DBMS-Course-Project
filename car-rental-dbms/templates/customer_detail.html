@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block title %}{{ c.full_name }}{% endblock %}
+{% block content %}
+<div class="page-head"><h1>{{ c.full_name }}</h1><div class="d-flex gap-2"><a class="btn btn-amber" href="{{ url_for('reservation_new', customer_id=c.customer_id) }}">New reservation</a><a class="btn btn-outline-primary" href="{{ url_for('customer_edit', customer_id=c.customer_id) }}">Edit</a>
+<form method="post" action="{{ url_for('customer_delete', customer_id=c.customer_id) }}" data-confirm="Delete this customer permanently?">{{ csrf_field() }}<button class="btn btn-outline-danger">Delete</button></form></div></div>
+<div class="panel"><dl class="kv row"><div class="col-md-3"><dt>Phone</dt><dd>{{ c.phone }}</dd></div><div class="col-md-3"><dt>Email</dt><dd>{{ c.email }}</dd></div><div class="col-md-3"><dt>Licence</dt><dd>{{ c.driving_license_number }}</dd></div><div class="col-md-3"><dt>Address</dt><dd>{{ c.address }}</dd></div></dl></div>
+<div class="panel"><h2>Rental history</h2><div class="table-responsive"><table class="table table-hover"><thead><tr><th>Res #</th><th>Vehicle</th><th>Dates</th><th>Status</th><th>Final bill</th></tr></thead><tbody>
+{% for h in history %}<tr><td><a href="{{ url_for('reservation_detail', reservation_id=h.reservation_id) }}">#{{ h.reservation_id }}</a></td><td>{{ h.brand }} {{ h.model }} ({{ h.registration_number }})</td><td>{{ h.start_date|d }} - {{ h.expected_return_date|d }}</td><td><span class="badge badge-status s-{{ h.reservation_status }}">{{ h.reservation_status }}</span></td><td>{% if h.final_amount is not none %}<a href="{{ url_for('invoice', rental_id=h.rental_id) }}">{{ h.final_amount|money }}</a>{% else %}-{% endif %}</td></tr>
+{% else %}<tr><td colspan="5" class="empty">No reservations yet.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

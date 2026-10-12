@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block title %}Customers{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Customers</h1><a class="btn btn-amber" href="{{ url_for('customer_add') }}"><i class="bi bi-plus-lg"></i> Add customer</a></div>
+<div class="panel">
+<form class="row g-2 mb-3" method="get"><div class="col-md-8"><input class="form-control" name="q" value="{{ q }}" placeholder="Search name, phone, email or licence number"></div>
+<div class="col-md-4 d-flex gap-2"><button class="btn btn-dark">Search</button><a class="btn btn-outline-secondary" href="{{ url_for('customers') }}">Clear</a></div></form>
+<div class="table-responsive"><table class="table table-hover"><thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Email</th><th>Licence</th><th></th></tr></thead><tbody>
+{% for c in customers %}<tr><td>{{ c.customer_id }}</td><td><a href="{{ url_for('customer_detail', customer_id=c.customer_id) }}">{{ c.full_name }}</a></td><td>{{ c.phone }}</td><td>{{ c.email }}</td><td>{{ c.driving_license_number }}</td>
+<td class="text-nowrap text-end"><a class="btn btn-sm btn-outline-secondary" href="{{ url_for('customer_detail', customer_id=c.customer_id) }}"><i class="bi bi-eye"></i></a> <a class="btn btn-sm btn-outline-primary" href="{{ url_for('customer_edit', customer_id=c.customer_id) }}"><i class="bi bi-pencil"></i></a>
+<form class="d-inline" method="post" action="{{ url_for('customer_delete', customer_id=c.customer_id) }}" data-confirm="Delete this customer permanently?">{{ csrf_field() }}<button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></form></td></tr>
+{% else %}<tr><td colspan="6" class="empty">No customers match your search.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

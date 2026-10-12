@@ -1,0 +1,16 @@
+{% extends "base.html" %}{% block title %}Start rental{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Start rental (vehicle pickup)</h1><a class="btn btn-outline-secondary" href="{{ url_for('rentals') }}">Active rentals</a></div>
+<div class="panel">
+{% if candidates %}
+<form method="post" class="row g-3">{{ csrf_field() }}
+  <div class="col-12"><label class="form-label">Confirmed reservation ready for pickup</label><select class="form-select" name="reservation_id" id="reservation_id" required><option value="">Choose a reservation</option>
+  {% for c in candidates %}<option value="{{ c.reservation_id }}" data-odo="{{ c.last_odometer }}" {{ 'selected' if form.reservation_id|string==c.reservation_id|string }}>#{{ c.reservation_id }} - {{ c.full_name }} - {{ c.brand }} {{ c.model }} ({{ c.registration_number }}) - {{ c.start_date|d }} to {{ c.expected_return_date|d }}{% if c.availability_status!='Available' %} [vehicle {{ c.availability_status }}]{% endif %}</option>{% endfor %}</select></div>
+  <div class="col-md-4"><label class="form-label">Actual pickup date and time</label><input class="form-control" type="datetime-local" name="pickup_datetime" value="{{ form.pickup_datetime }}" required></div>
+  <div class="col-md-4"><label class="form-label">Odometer reading (km)</label><input class="form-control" type="number" min="0" id="pickup_odometer" name="pickup_odometer" value="{{ form.pickup_odometer or '' }}" required><div class="form-text" id="odo_hint"></div></div>
+  <div class="col-md-4"><label class="form-label">Vehicle condition at pickup</label><select class="form-select" name="pickup_condition">{% for t in CONDITIONS %}<option {{ 'selected' if form.pickup_condition==t }}>{{ t }}</option>{% endfor %}</select></div>
+  <div class="col-12"><button class="btn btn-amber">Issue vehicle</button></div>
+</form>
+{% else %}<div class="empty">No Confirmed reservations are due for pickup today. <a href="{{ url_for('reservation_new') }}">Create a reservation</a>.</div>{% endif %}
+</div>
+{% endblock %}

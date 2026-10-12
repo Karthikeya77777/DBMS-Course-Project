@@ -1,0 +1,36 @@
+:root{--navy:#0f1b2d;--navy-2:#16263d;--amber:#f2a516;--ink:#1c2533;--muted:#6b778a;--line:#e1e6ee;--bg:#f3f5f9}
+body{background:var(--bg);color:var(--ink);font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;font-size:.95rem}
+.sidebar{position:fixed;inset:0 auto 0 0;width:244px;background:var(--navy);color:#c5cfdd;display:flex;flex-direction:column;padding:1.1rem .8rem;z-index:100;overflow-y:auto}
+.brand{display:flex;gap:.7rem;align-items:center;padding:.2rem .5rem 1.2rem;color:#fff;text-decoration:none}
+.brand i{font-size:1.5rem;color:var(--amber)}.brand b{display:block;line-height:1.1;font-size:1.05rem}.brand small{color:#8fa0b8;font-size:.72rem}
+.sidebar .nav-link{color:#c5cfdd;border-radius:8px;padding:.55rem .8rem;display:flex;gap:.7rem;align-items:center}
+.sidebar .nav-link:hover{background:var(--navy-2);color:#fff}
+.sidebar .nav-link.active{background:var(--navy-2);color:#fff;box-shadow:inset 3px 0 0 var(--amber)}
+.nav-group{font-size:.72rem;color:#7d8da6;margin:1rem .8rem .3rem}
+.content{margin-left:244px;padding:1.6rem 2rem 3rem;max-width:1400px}
+.page-head{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1.2rem;flex-wrap:wrap}
+.page-head h1{font-size:1.45rem;font-weight:650;margin:0}
+.panel{background:#fff;border:1px solid var(--line);border-radius:10px;padding:1.1rem 1.2rem;margin-bottom:1.2rem}
+.panel h2{font-size:1rem;font-weight:650;margin-bottom:.8rem}
+.hero{background:linear-gradient(110deg,var(--navy) 55%,#1d3557);color:#fff;border-radius:12px;padding:1.5rem 1.8rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem;overflow:hidden}
+.hero h1{font-size:1.5rem;font-weight:650;margin:0 0 .3rem}.hero p{margin:0;color:#a9b8cf;max-width:34rem}
+.hero svg{width:260px;flex:none;opacity:.95}
+.stat{background:#fff;border:1px solid var(--line);border-radius:10px;padding:1rem 1.1rem;height:100%;display:flex;gap:.9rem;align-items:center;text-decoration:none;color:inherit;transition:border-color .15s,transform .15s}
+.stat:hover{border-color:var(--amber);transform:translateY(-2px);color:inherit}
+.stat .ico{width:42px;height:42px;border-radius:10px;background:#fff4dc;color:#b87800;display:grid;place-items:center;font-size:1.2rem;flex:none}
+.stat.danger .ico{background:#fde8e8;color:#c0392b}.stat.ok .ico{background:#e3f6ea;color:#1e8a4c}.stat.blue .ico{background:#e4edfb;color:#2557b3}
+.stat .num{font-size:1.55rem;font-weight:700;line-height:1}.stat .lbl{color:var(--muted);font-size:.82rem}
+.table{--bs-table-bg:transparent;margin:0}.table thead th{font-weight:600;color:var(--muted);font-size:.8rem;border-bottom:1px solid var(--line);white-space:nowrap}
+.table td{vertical-align:middle}.table-hover tbody tr:hover{background:#f8fafc}
+.btn-amber{background:var(--amber);border-color:var(--amber);color:#201600;font-weight:600}.btn-amber:hover{background:#dd9410;border-color:#dd9410;color:#201600}
+.badge-status{font-weight:600;padding:.35em .65em;border-radius:6px;font-size:.76rem}
+.s-Available,.s-Completed,.s-Returned,.s-Excellent{background:#e3f6ea;color:#17703d}
+.s-Rented,.s-Active,.s-Good{background:#e4edfb;color:#2250a8}
+.s-Maintenance,.s-Confirmed,.s-Fair{background:#fff1d6;color:#9a6200}
+.s-Cancelled,.s-Overdue,.s-Damaged{background:#fde8e8;color:#b02a2a}
+.form-label{font-weight:600;font-size:.85rem}.kv dt{color:var(--muted);font-weight:500;font-size:.82rem}.kv dd{margin-bottom:.7rem}
+.bill td{padding:.45rem 0}.bill .total td{border-top:2px solid var(--ink);font-weight:700;font-size:1.1rem;padding-top:.7rem}
+.empty{text-align:center;color:var(--muted);padding:2rem 0}
+.toast-wrap{position:fixed;top:1rem;right:1rem;z-index:2000;width:min(380px,92vw)}
+@media(max-width:991px){.sidebar{position:static;width:auto;flex-direction:row;flex-wrap:wrap}.content{margin-left:0;padding:1rem}.hero svg{display:none}}
+@media print{.sidebar,.no-print,.toast-wrap{display:none!important}.content{margin:0;padding:0}.panel{border:0}}
